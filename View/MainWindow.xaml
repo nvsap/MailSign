@@ -1,0 +1,61 @@
+﻿<Window x:Class="MailWPF.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MailWPF.View"
+        xmlns:conv ="clr-namespace:MailWPF.Converters"
+        xmlns:viewmodel="clr-namespace:MailWPF.ViewModel"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.DataContext>
+        <viewmodel:MainViewModel/>
+    </Window.DataContext>
+    <Grid Margin="20">
+        <Grid.Resources>
+            <conv:BoolToVisibilityConverter x:Key="bool2vis"/>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition  Height="Auto"/>
+            <RowDefinition  Height="Auto"/>
+            <RowDefinition  Height="Auto"/>
+            <RowDefinition  Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="User Id" Margin="10"/>
+                <TextBox Grid.Column="1" Text="{Binding Path=User.UserId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10"/>
+                <Button Grid.Column="2" Command="{Binding FindUserCommand}" Content="Search" Margin="10"/>
+            </Grid>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Visibility="{Binding IsClientLoaded, Converter={StaticResource bool2vis}, Mode=TwoWay}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Email" Margin="10"/>
+                <Label Grid.Column="1" Content="{Binding User.Email}" Margin="10"/>
+            </Grid>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Visibility="{Binding IsClientLoaded, Converter={StaticResource bool2vis}, Mode=TwoWay}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Signatures" Margin="10"/>
+                <ComboBox Grid.Column="1" DisplayMemberPath="Title" ItemsSource="{Binding Signatures, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedSignature, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10"/>
+                <Button Grid.Column="2" Command="{Binding RenderCommand}" Content="Render" Margin="10"/>
+            </Grid>
+        </StackPanel>
+        <WebBrowser Grid.Row="3" Name="myWebBrowser" viewmodel:WebBrowserBehavior.Body="{Binding Path=SelectedSignature.HTML}" Visibility="{Binding IsClientLoaded, Converter={StaticResource bool2vis}, Mode=TwoWay}"/>
+    </Grid>
+</Window>
